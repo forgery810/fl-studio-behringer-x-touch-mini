@@ -1,0 +1,62 @@
+import device
+import channels
+import patterns
+
+class Leds:
+
+	keyboard = [0x01, 0x02, 0x04, 0x05, 0x06, 0x08, 0x09, 0x0A, 0x0B, 0x0c, 0x0D, 0x0E, 0x0F]
+
+	def light_keys():
+		print('light_keys')
+		for i in Leds.keyboard:
+			device.midiOutMsg(0x90, 0x00, i, 0x01)
+
+	def off():
+		for i in range(0, 17):
+			device.midiOutMsg(0x90, 0x00, i, 0x00)
+
+	def light_steps():
+		print('light_steps')
+		for i in range(0, 16):
+			if channels.getGridBit(channels.selectedChannel(), i) == 1:
+				device.midiOutMsg(0x90, 0x00, i, 0x01)
+			else:
+				device.midiOutMsg(0x90, 0x00, i, 0x00)
+
+	# device.midiOutMsg(176, 0, 15, 2)
+	# device.midiOutMsg(0xC0, 0x00, 0x09, 0x05)
+
+# Buttons
+	# device.midiOutMsg(0x90, 0x00, 0x0F, 0x01) # Lights button 16
+# midiId = 0x90
+# channel = 0x00
+# velocity
+# 0 - off
+# 1 - on 
+# 2 - blinking 
+
+
+
+# Knobs
+	# device.midiOutMsg(0xB0, 0x00, 0x0F, 0x04) # Light Knob 7 led 4
+# velcity
+# all_off = 0x00
+# 1-13 = indiviual leds
+# 14-26 - blinking
+# 27 all_on
+# 28 - all blinking
+
+	# device.midiOutMsg(0xB0, 0x00, 0x7F, 0x00) # Standard Mode
+	# device.midiOutMsg(0xB0, 0x00, 0x7F, 0x01) # MC Mode
+
+
+		# device.midiOutMsg(0xC0, 0x00, 0x00, 0x00) layer a
+			# device.midiOutMsg(0xC0, 0x00, 0x01, 0x00) layer b 
+
+	device.midiOutMsg(0xC0, 0x00, 0x00, 0x00)
+	# device.midiOutMsg(176, 0, 15, 2)
+	# device.midiOutMsg(0xC0, 0x00, 0x09, 0x05)
+	# device.midiOutMsg(0x90, 0x00, 0x0F, 0x01) # Lights button 16
+	# device.midiOutMsg(0xB0, 0x00, 0x0F, 0x04) # Light Knob 7 led 4
+	# device.midiOutMsg(0xB0, 0x00, 0x7F, 0x00) # Standard Mode
+	# device.midiOutMsg(0xB0, 0x00, 0x7F, 0x01) # MC Mode
