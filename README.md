@@ -5,7 +5,7 @@ A MIDI script to provide functionality for the Behringer X-Touch Mini with FL St
 # Instructions
 
 This script currently uses the Standard mode with the stock layout. Install the script by unzipping the folder to Documents/Image-Line/Settings/Hardware.
-Select behringer-xtouxh-mini from the options under midi settings. Make sure both input and output MIDI are set to the same port.  
+Select behringer-xtouch-mini from the options under midi settings. Make sure both input and output MIDI are set to the same port.  
   
 The Fader is set to control currently selected track, channel, or playlist track depending on what is currently focused. 
 
