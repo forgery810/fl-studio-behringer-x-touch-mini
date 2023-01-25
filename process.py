@@ -17,6 +17,10 @@ class Dispatch:
 
 	def __init__(self, event):
 		self.event = event
+		self.mapped_1 = Utility.mapvalues(self.event.data2, 0, 1, 0, 127)
+		self.mapped_minus_1 = Utility.mapvalues(self.event.data2, -1, 1, 0, 127)		
+		self.channel = channels.selectedChannel()
+		self.track = mixer.trackNumber()
 
 class Process(Dispatch):
 
@@ -37,8 +41,11 @@ class Process(Dispatch):
 			Fader.fade(self.event)
 
 		elif self.event.midiId == Button.midi_id and self.event.data1 in d.knob_push_cc:
-			Knob.press(self.event)
+			KnobControl.press(self)
 
+		elif Mode.get_mode() == 8:
+			if self.event.midiId == Knob.midi_id:
+				KnobControl.levels(self)
 
 class Buttons(Dispatch):
 
@@ -115,6 +122,8 @@ class Mode():
 			Leds.light_keys()
 		elif Mode.get_mode() == 7:
 			Leds.light_steps()
+		elif Mode.get_mode() == 8:
+			Leds.light_transport()
 		else:
 			Leds.off()
 
@@ -128,28 +137,50 @@ class Update():
 		if event and Mode.get_mode() == 7:
 			print('event and 7')
 			Leds.light_steps()
+		elif Mode.get_mode() == 8:
+			if event == 256 or event == 260:
+				Leds.light_transport()
 
-class Knob():
 
-	def press(event):
-		if event.data1 == d.KnobPush.eight.cc:
+class KnobControl(Process):
+
+	def press(self):
+		if self.event.data1 == d.KnobPush.eight.cc:
 			Mode.set_mode_direct(8)
-			event.handled = True			
-		elif event.data1 == d.KnobPush.one.cc:
+			self.event.handled = True			
+		elif self.event.data1 == d.KnobPush.one.cc:
 			Action.focus_channels()
-			event.handled = True
-		elif event.data1 == d.KnobPush.two.cc:
+			self.event.handled = True
+		elif self.event.data1 == d.KnobPush.two.cc:
 			Action.focus_mixer()
-			event.handled = True
-		elif event.data1 == d.KnobPush.six.cc:
+			self.event.handled = True
+		elif self.event.data1 == d.KnobPush.six.cc:
 			Mode.set_mode_direct(6)
-			event.handled = True
-		elif event.data1 == d.KnobPush.seven.cc:
+			self.event.handled = True
+		elif self.event.data1 == d.KnobPush.seven.cc:
 			Mode.set_mode_direct(7)
-			event.handled = True
+			self.event.handled = True
 
-		# elif event.data1 == d.KnobPush..cc:
+	def levels(self):
+		if self.event.data1 == d.Knob.one.cc:
+			if ui.getFocused(midi.widMixer):
+				mixer.setTrackVolume(self.track, self.mapped_1, 1)
 
+			elif ui.getFocused(midi.widChannelRack):
+				channels.setChannelVolume(self.channel, self.mapped_1, 1)
+
+		elif self.event.data1 == d.Knob.two.cc:
+			if ui.getFocused(midi.widMixer):
+				mixer.setTrackPan(self.track, self.mapped_minus_1, 1)
+			elif ui.getFocused(midi.widChannelRack):
+				channels.setChannelPan(self.channel, self.mapped_minus_1, 1)
+
+		elif self.event.data1 == d.Knob.three.cc:
+			if ui.getFocused(midi.widChannelRack):
+				mixer.linkChannelToTrack(channels.selectedChannel(), int(Utility.mapvalues(self.event.data2, 0, 125, 0, 127)))
+			elif ui.getFocused(midi.widMixer):
+				Action.set_mixer_route(int(Utility.mapvalues(self.event.data2, 0, 125, 0, 127)))
+				ui.setHintMsg(f"Route Current Track to Track {int(Utility.mapvalues(self.event.data2, 0, 125, 0, 127))}")
 
 class Fader():
 

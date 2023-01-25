@@ -1,13 +1,14 @@
 import device
 import channels
 import patterns
+import transport
+import ui
 
 class Leds:
 
 	keyboard = [0x01, 0x02, 0x04, 0x05, 0x06, 0x08, 0x09, 0x0A, 0x0B, 0x0c, 0x0D, 0x0E, 0x0F]
 
 	def light_keys():
-		print('light_keys')
 		for i in Leds.keyboard:
 			device.midiOutMsg(0x90, 0x00, i, 0x01)
 
@@ -16,12 +17,25 @@ class Leds:
 			device.midiOutMsg(0x90, 0x00, i, 0x00)
 
 	def light_steps():
-		print('light_steps')
 		for i in range(0, 16):
 			if channels.getGridBit(channels.selectedChannel(), i) == 1:
 				device.midiOutMsg(0x90, 0x00, i, 0x01)
 			else:
 				device.midiOutMsg(0x90, 0x00, i, 0x00)
+
+	def light_transport():
+		if transport.isRecording():
+			device.midiOutMsg(0x90, 0x00, 0x0F, 1)
+		if ui.isLoopRecEnabled():
+			device.midiOutMsg(0x90, 0x00, 0x0C, 1)
+		else:
+			device.midiOutMsg(0x90, 0x00, 0x0C, 0)
+		if transport.isPlaying():
+			device.midiOutMsg(0x90, 0x00, 0x0E, 1)
+			device.midiOutMsg(0x90, 0x00, 0x0D, 0)
+		else:
+			device.midiOutMsg(0x90, 0x00, 0x0E, 0)
+			device.midiOutMsg(0x90, 0x00, 0x0D, 1)
 
 	# device.midiOutMsg(176, 0, 15, 2)
 	# device.midiOutMsg(0xC0, 0x00, 0x09, 0x05)
