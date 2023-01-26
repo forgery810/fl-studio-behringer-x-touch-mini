@@ -8,7 +8,7 @@ class Input:
 
 
 knobs = [(176, i) for i in range(1, 9)]
-knob_push_cc = [i for i in range(0, 8)]
+knob_push_cc = [i for i in range(0, 8)] + [k for k in range(24, 32)]
 buttons_one = [i for i in range(8, 24)]
 buttons_two = [i for i in range(32, 48)]
 # buttons_two = [(144, i) for i in range(32, 48)]
@@ -25,6 +25,7 @@ class Knob():
 	seven = Input(midi_id, 7)
 	eight = Input(midi_id, 8)
 
+
 class KnobPush():
 	midi_id = 144 
 	one = Input(midi_id, 0)
@@ -35,13 +36,19 @@ class KnobPush():
 	six = Input(midi_id, 5)
 	seven = Input(midi_id, 6)
 	eight = Input(midi_id, 7)	
+	nine = Input(midi_id, 24)
+	ten = Input(midi_id, 25)
+	eleven = Input(midi_id, 26)
+	tweleve = Input(midi_id, 27)
+	thirteen = Input(midi_id, 28)
+	fourteen = Input(midi_id, 29)
+	fifteen  = Input(midi_id, 30)
+	sixteen = Input(midi_id, 31)
 
 class Button():
 	midi_id = 144
 
-
 fader = Input(176, 9)
-
 
 k = {
 	'one': {'turn': Input(176, 1),

@@ -1,3 +1,3 @@
 class Config:
 
-	INIT_MODE = 8
+	INIT_MODE = 7

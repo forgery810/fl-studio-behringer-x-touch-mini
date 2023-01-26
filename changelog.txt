@@ -1,0 +1,6 @@
+0.10 ---
+	- knobs 1-3 control level panning track/channel assignment
+	- octave switching now possible on keyboard
+	- transport layout accessible in layer b in every mode
+	- steps 17-32 in step-sequencer accessible by pressing button 7
+	- leds reflect play modes

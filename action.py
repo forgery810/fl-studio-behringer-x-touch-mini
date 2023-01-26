@@ -339,17 +339,17 @@ class Action():
 	def get_shift_status():
 		return Action.shift_status
 
-	def pad_mode():
-		return Pads.toggle_pad_mode()
+	# def pad_mode():
+	# 	return Pads.toggle_pad_mode()
 
-	def toggle_offset():
-		return Pads.toggle_offset()
+	# def toggle_offset():
+	# 	return Pads.toggle_offset()
 
-	def step_param():
-		Pads.toggle_step_param()
+	# def step_param():
+	# 	Pads.toggle_step_param()
 
-	def toggle_range():
-		Pads.toggle_offset()
+	# def toggle_range():
+	# 	Pads.toggle_offset()
 
 	def get_step_param():
 		return Action.parameter_index
