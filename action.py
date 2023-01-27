@@ -14,7 +14,7 @@ import ui
 import data 
 # from config import Config 
 # from wheels import ModWheel, PitchWheel 
-# from utility import Utility
+from utility import Utility
 # from notes import Notes, Scales 
 # from pads import Pads 
 # from timing import Timing 
@@ -33,6 +33,7 @@ class Action():
 	# c = itertools.cycle(Config.COLORS)
 	a = itertools.cycle(alter)
 	alt_status = ''
+	random_offset = 63
 
 	def call_func(f):
 		method = getattr(Action, f)
@@ -311,7 +312,7 @@ class Action():
 				channels.setGridBit(channels.channelNumber(), i, 0)
 			for z in range (patterns.getPatternLength(patterns.patternNumber())):
 				y = Utility.num_gen()
-				if y > ( PitchWheel.get_pitch_value() * 516):
+				if y > ( Action.random_offset * 516):
 					channels.setGridBit(channels.channelNumber(), z, 1)
 				else:
 					pass

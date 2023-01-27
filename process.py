@@ -7,12 +7,14 @@ import device
 import mixer 
 import channels 
 import playlist
+import plugins
 from utility import Utility
 import midi
 from config_layout import layout
 from leds import Leds
 from config import Config
 import itertools
+import plugindata as plg
 # from buttons import Buttons
 
 class Dispatch:
@@ -23,6 +25,7 @@ class Dispatch:
 		self.mapped_minus_1 = Utility.mapvalues(self.event.data2, -1, 1, 0, 127)		
 		self.channel = channels.selectedChannel()
 		self.track = mixer.trackNumber()
+		self.random_offset = 63
 
 class Process(Dispatch):
 
@@ -59,9 +62,9 @@ class Process(Dispatch):
 			print('knob levels')
 			KnobControl.levels(self)
 
-		elif self.event.midiId == 144 and self.event.data1 == 95 and self.event.event.midiChanEx == 128:
+		elif self.event.midiId == 144 and self.event.data1 == 95 and self.event.midiChanEx == 128:
 			device.midiOutMsg(0xB0, 0x00, 0x7F, 0x00)
-			
+
 class Buttons(Dispatch):
 
 	def press(self):
@@ -182,18 +185,24 @@ class Update():
 
 class KnobControl(Process):
 
+
 	def press(self):
 
 		if self.event.data1 == d.KnobPush.one.cc:
-			Action.focus_channels()
+			if ui.getFocused(midi.widMixer):
+				Action.focus_channels()
+			elif ui.getFocused(midi.widChannelRack):
+				Action.focus_mixer()
+			else:
+				Action.focus_channels()
 			self.event.handled = True
 
 		elif self.event.data1 == d.KnobPush.two.cc:
-			Action.focus_mixer()
+			Action.open_channel()
 			self.event.handled = True
 
 		elif self.event.data1 == d.KnobPush.three.cc:
-			# device.midiOutMsg(0xB0, 0x00, 0x7F, 0x01)
+			# device.midiOutMsg(0xB0, 0x00, 0x7F, 0x01)	# change to mc mode
 			Leds.off()
 			self.event.handled = True
 
@@ -224,6 +233,26 @@ class KnobControl(Process):
 			self.event.handled = True		
 
 	def levels(self):
+
+		if self.event.data1 == d.Knob.sixteen.cc:
+			Action.random_offset = self.event.data2
+
+
+		if ui.getFocused(5) and plugins.isValid(channels.channelNumber()): 
+			# print(plugins.getPluginName(channels.channelNumber()))
+			# plugins.setParamValue(self.mapped_1, self.event.data1, channels.selectedChannel(), -1, 1)
+			plugin = plugins.getPluginName(channels.selectedChannel())	
+			param_count = plugins.getParamCount(channels.selectedChannel())
+			if plugin in plg.plugin_dict:
+				print('has plugin')			                                                                           																		
+				# plugins.setParamValue(self.mapped_1, plugin_dict[plugin][knob_num.index(self.event.data1)], channels.selectedChannel())
+				plugins.setParamValue(self.mapped_1, plg.plugin_dict[plugin][d.knob_ccs.index(self.event.data1)], channels.selectedChannel())
+				self.event.handled = True
+		
+			else:		
+				print('else')
+				plugins.setParamValue(self.mapped_1, self.event.data1, self.channel)
+				self.event.handled = True
 
 		if self.event.data1 == d.Knob.one.cc:
 			if ui.getFocused(midi.widMixer):

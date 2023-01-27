@@ -4,3 +4,8 @@
 	- transport layout accessible in layer b in every mode
 	- steps 17-32 in step-sequencer accessible by pressing button 7
 	- leds reflect play modes
+
+0.20 ---
+	- pressing knob 1 now alternates between channel rack and mixer
+	- pressing knob 2 opens current channel/plugin
+	- knobs will now control plugin parameters when focused

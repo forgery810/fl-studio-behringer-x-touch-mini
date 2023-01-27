@@ -13,7 +13,7 @@ buttons_one = [i for i in range(8, 24)]
 buttons_two = [i for i in range(32, 48)]
 # buttons_two = [(144, i) for i in range(32, 48)]
 buttons = buttons_one + buttons_two
-
+knob_ccs = [i for i in range(1, 9)] + [k for k in range(11, 19)]
 class Knob():
 	midi_id = 176
 	one = Input(midi_id, 1)
@@ -24,6 +24,7 @@ class Knob():
 	six = Input(midi_id, 6)
 	seven = Input(midi_id, 7)
 	eight = Input(midi_id, 8)
+	sixteen = Input(midi_id, 18)
 
 
 class KnobPush():
