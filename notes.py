@@ -13,13 +13,13 @@ class Notes():
 		return Notes.root
 
 	def set_root_note(data_two):
-		Notes.root = int(Utility.mapvalues(data_two, 0, 11, 0, 127))
+		Notes.root = data_two
 
 	def set_upper_limit(data_two):
-		Notes.upper_limit = int(Utility.mapvalues(data_two, -50, 0, 0, 127))
+		Notes.upper_limit = data_two
 
 	def set_lower_limit(data_two):
-		Notes.lower_limit = int(Utility.mapvalues(data_two, 0, 50, 0, 127))
+		Notes.lower_limit = data_two
 		
 	def get_upper_limit():
 		return Notes.upper_limit
@@ -47,7 +47,7 @@ class Scales(Notes):
 	scale_names = ["Major", "Natural Minor", "Harmonic Minor", "Dorian", "Mixolydian", "Minor Pentatonic", "Chromatic"]
 
 	def set_scale(data_two):
-		Scales.scale_choice = int(Utility.mapvalues(data_two, 0, len(Scales.scale_names) - 1, 0, 127))
+		Scales.scale_choice = data_two
 
 	def get_scale_choice():
 		return Scales.scale_choice

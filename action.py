@@ -15,7 +15,7 @@ import data
 # from config import Config 
 # from wheels import ModWheel, PitchWheel 
 from utility import Utility
-# from notes import Notes, Scales 
+from notes import Notes, Scales 
 # from pads import Pads 
 # from timing import Timing 
 
@@ -43,6 +43,14 @@ class Action():
 	def alt():
 		Action.alt_status = next(Action.a) 
 		Timing.begin_message(f'Alt Status: {Action.alt_status}')
+
+	def channel_mixer():
+		if ui.getFocused(midi.widMixer):
+			Action.focus_channels()
+		elif ui.getFocused(midi.widChannelRack):
+			Action.focus_mixer()
+		else:
+			Action.focus_channels()
 
 	def set_mixer_route(track):
 		Action.mixer_send = track 
@@ -279,8 +287,8 @@ class Action():
 			mixer.soloTrack(mixer.trackNumber())
 		elif ui.getFocused(widChannelRack):
 			channels.soloChannel(channels.selectedChannel())
-		elif ui.getFocused(widPlaylist) and playlist.isTrackSelected(ModWheel.get_pl_mod_value()):
-			playlist.soloTrack(ModWheel.get_pl_mod_value())
+		# elif ui.getFocused(widPlaylist) and playlist.isTrackSelected(ModWheel.get_pl_mod_value()):
+		# 	playlist.soloTrack(ModWheel.get_pl_mod_value())
 
 	def link_mix():
 		mixer.linkTrackToChannel(0)
@@ -340,18 +348,12 @@ class Action():
 	def get_shift_status():
 		return Action.shift_status
 
-	# def pad_mode():
-	# 	return Pads.toggle_pad_mode()
+	def set_random_offset(val):
+		Action.random_offset = val
 
-	# def toggle_offset():
-	# 	return Pads.toggle_offset()
-
-	# def step_param():
-	# 	Pads.toggle_step_param()
-
-	# def toggle_range():
-	# 	Pads.toggle_offset()
-
+	def get_random_offset():
+		return Action.random_offset
+		
 	def get_step_param():
 		return Action.parameter_index
 

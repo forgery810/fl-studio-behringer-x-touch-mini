@@ -18,3 +18,9 @@ class Utility():
 		if  -0.01 < solution < 0.01:
 			solution = 0
 		return solution
+
+	def level_adjust(cc, current_level, increment):
+		if cc >= 65:
+			return current_level - increment
+		elif cc <= 15:
+			return current_level + increment

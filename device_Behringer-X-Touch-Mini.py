@@ -26,10 +26,14 @@ def  OnMidiMsg(event):
 	"""Function called on every midi message sent by controller"""
 
 	print(event.midiId, event.data1, event.data2, event.midiChan, event.midiChanEx, event.timestamp)
-	p = Process(event)
+
+	p.event = event
+	p.channel = channels.selectedChannel()
 	p.triage()
 
 def OnRefresh(event):
 	print(event)
 	Update.light_control(event)
 	# Mode.set_leds()
+
+p = Process()

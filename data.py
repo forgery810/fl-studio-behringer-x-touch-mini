@@ -1,55 +1,6 @@
 import device
 from leds import Leds 
 
-class Input:
-
-	def __init__(self, midi_id, cc):
-		self.midi_id = midi_id
-		self.cc = cc
-
-knobs = [(176, i) for i in range(1, 9)]
-knob_push_cc = [i for i in range(0, 8)] + [k for k in range(24, 32)]
-buttons_one = [i for i in range(8, 24)]
-buttons_two = [i for i in range(32, 48)]
-buttons = buttons_one + buttons_two
-knob_ccs = [i for i in range(1, 9)] + [k for k in range(11, 19)]
-mc_knobs = [i for i in range(16, 24)]
-button_midi_id = 144
-stand_chan_ex = 128
-
-
-class Knob():
-	midi_id = 176
-	k_one = 1
-	k_two = 2
-	k_three = 3
-	k_four = 4
-	k_five = 5
-	k_six = 6
-	k_seven = 7
-	k_eight = 8
-	k_sixteen = 18
-
-class KnobPush():
-
-	midi_id = 144 
-	one = 0
-	two = 1
-	three = 2
-	four = 3
-	five = 4
-	six = 5
-	seven = 6
-	eight = 7
-	nine = 24
-	ten = 25
-	eleven = 26
-	tweleve = 27
-	thirteen = 28
-	fourteen = 29
-	fifteen  = 30
-	sixteen = 31
-
 class MC:
 	button_id = 144
 	midi_id = 144
@@ -98,7 +49,7 @@ class MC:
 		'95': 72,
 	}
 
-	mapping ={
+	mapping = {
 		89: "one",
 		90: "two",
 		40: "three",
@@ -116,23 +67,59 @@ class MC:
 		94: "fifteen",
 		95: "sixteen",
 
-		# 32: "seventeen",
-		# 33: "eighteen",
-		# 34: "nineteen",
-		# 35: "twenty",
-		# 36: "twentyone",
-		# 37: "twentytwo",
-		# 38: "twentythree",
-		# 39: "twentyfour",
-		# 40: "twentyfive",
-		# 41: "twentysix",
-		# 42: "twentyseven",
-		# 43: "twentyeight",
-		# 44: "twentynine",
-		# 45: "thirty",
-		# 46: "thirtyone",
-		# 47: "thirtytwo",
+		109: "seventeen",
+		110: "eighteen",
+		60: "nineteen",
+		61: "twenty",
+		62: "twentyone",
+		63: "twentytwo",
+		64: "twentythree",
+		65: "twentyfour",
+		107: "twentyfive",
+		108: "twentysix",
+		111: "twentyseven",
+		112: "twentyeight",
+		106: "twentynine",
+		113: "thirty",
+		114: "thirtyone",
+		115: "thirtytwo",
+
+		129: "thirtythree",
+		13: "thirtyfour",
+		80: "thirtyfive",
+		81: "thirtysix",
+		82: "thirtyseven",
+		83: "thirtyeight",
+		84: "thirtynine",
+		85: "forty",
+		127: "fortyone",
+		128: "fortytwo",
+		131: "fortythree",
+		131: "fortyfour",
+		126: "fortyfive",
+		133: "fortysix",
+		134: "fortyseven",
+		135: "fortyeight",
 	}
+
+	mapping_b = {
+		89: "one_b",
+		90: "two_b",
+		40: "three_b",
+		41: "four_b",
+		42: "five_b",
+		43: "six_b",
+		44: "seven_b",
+		45: "eight_b",
+		87: "nine_b",
+		88: "ten_b",
+		91: "eleven_b",
+		92: "twelve_b",
+		86: "thirteen_b",
+		93: "fourteen_b",
+		94: "fifteen_b",
+		95: "sixteen_b",
+		}
 
 	keyboard_leds = [0x5A, 0x28, 0x2A, 0x2B, 0x2C, 0x57, 0x58, 0x5B, 0x5C, 0x56, 0x5d, 0x5E, 0x5F]
 	all_button_leds =      [0x59, 0x5A, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x57, 0x58, 0x5B, 0x5C, 0x56, 0x5d, 0x5E, 0x5F]
@@ -150,7 +137,6 @@ class MC:
 				device.midiOutMsg(0x90, 0x00, i, 0x7F)
 		elif mode == 8:
 			Leds.light_transport()
-
 
 class Standard:
 
@@ -237,97 +223,3 @@ class Standard:
 	}
 
 	keyboard_leds = [0x01, 0x02, 0x04, 0x05, 0x06, 0x08, 0x09, 0x0A, 0x0B, 0x0c, 0x0D, 0x0E, 0x0F]
-
-class Button():
-	midi_id = 144
-
-fader = Input(176, 9)
-
-k = {
-	'one': {'turn': Input(176, 1),
-			'push': Input(144, 0) },	
-	'two': {'turn': Input(176, 2),
-			'push': Input(144, 1) },	
-	'three': {'turn': Input(176, 3),
-			'push': Input(144, 2) },	
-	'four': {'turn': Input(176, 4),
-			'push': Input(144, 3) },	
-	'five': {'turn': Input(176, 5),
-			'push': Input(144, 4) },	
-	'six': {'turn': Input(176, 6),
-			'push': Input(144, 5) },	
-	'seven': {'turn': Input(176, 7),
-			'push': Input(144, 6) },
-	'eight': {'turn': Input(176, 8),
-			'push': Input(144, 7) },
-	}
-
-b = {
-	'one': {}
-
-}
-
-mapping ={
-	8: "one",
-	9: "two",
-	10: "three",
-	11: "four",
-	12: "five",
-	13: "six",
-	14: "seven",
-	15: "eight",
-	16: "nine",
-	17: "ten",
-	18: "eleven",
-	19: "twelve",
-	20: "thirteen",
-	21: "fourteen",
-	22: "fifteen",
-	23: "sixteen",
-
-	32: "seventeen",
-	33: "eighteen",
-	34: "nineteen",
-	35: "twenty",
-	36: "twentyone",
-	37: "twentytwo",
-	38: "twentythree",
-	39: "twentyfour",
-	40: "twentyfive",
-	41: "twentysix",
-	42: "twentyseven",
-	43: "twentyeight",
-	44: "twentynine",
-	45: "thirty",
-	46: "thirtyone",
-	47: "thirtytwo",
-	}
-
-
-class Controller:
-
-	 def __init__(self):
-	 	self.midi_id
-	 	self.cc 
-	 	self.data2
-
-
-
-# class KnobPush():
-# 	midi_id = 144 
-# 	one = Input(midi_id, 0)
-# 	two = Input(midi_id, 1)
-# 	three = Input(midi_id, 2)
-# 	four = Input(midi_id, 3)
-# 	five = Input(midi_id, 4)
-# 	six = Input(midi_id, 5)
-# 	seven = Input(midi_id, 6)
-# 	eight = Input(midi_id, 7)	
-# 	nine = Input(midi_id, 24)
-# 	ten = Input(midi_id, 25)
-# 	eleven = Input(midi_id, 26)
-# 	tweleve = Input(midi_id, 27)
-# 	thirteen = Input(midi_id, 28)
-# 	fourteen = Input(midi_id, 29)
-# 	fifteen  = Input(midi_id, 30)
-# 	sixteen = Input(midi_id, 31)
