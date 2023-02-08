@@ -1,11 +1,14 @@
 # name=Behringer X-Touch Mini
 # Author: ts-forgery
-# Version 0.05
+# Version 0.90
 
 import device
 import channels
 from midi import *
 import midi
+import mixer
+import patterns
+import channels
 from process import Process, Mode
 from leds import Leds
 from data import MC
@@ -17,7 +20,8 @@ def OnInit():
 	if device.isAssigned():		
 		print(device.getName())
 		print(f"Port Number: {device.getPortNumber()}")
-		MC.init_leds(Config.INIT_MODE)
+		# MC.init_leds(Config.INIT_MODE)
+		MC.init_leds(6)
 
 	else:
 		print("Not assigned")
@@ -29,11 +33,13 @@ def  OnMidiMsg(event):
 
 	p.event = event
 	p.channel = channels.selectedChannel()
+	p.track = mixer.trackNumber()
+	p.pattern = patterns.patternNumber()
+	p.random_offset = 63
 	p.triage()
 
 def OnRefresh(event):
 	print(event)
 	Update.light_control(event)
-	# Mode.set_leds()
 
 p = Process()

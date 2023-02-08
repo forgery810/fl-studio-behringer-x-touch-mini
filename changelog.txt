@@ -11,3 +11,14 @@
 	- knobs will now control plugin parameters when focused
 	- began transistion to mc mode
 	- added random pattern generator. knob 8 will control how likely steps are to be set.
+
+0.90 ---
+	- swtiched to MC mode 
+	- added seq parameter edit options
+	- added random note generator
+	- added plugin control
+	- all function buttons now able to be set by user
+	- added continuous note mode where all buttons play notes in user selected scale
+	- knob presses 1-5 are able to be set by user
+	- added color change option
+	- much more

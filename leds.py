@@ -14,8 +14,8 @@ class LedsMC:
 
 class Leds:
 
-	def blink_step():
-		pass
+	def blink_step(step):
+		device.midiOutMsg(0x90, 0x00, step, 0x01)
 
 	def light_layer(layer):
 		if layer == 0:
@@ -29,13 +29,10 @@ class Leds:
 			device.midiOutMsg(0x90, 0x00, 0x54, 0)
 
 	def light_one_knob(knob):
-		print('light_knob')
 		Leds.knobs_off()
 		device.midiOutMsg(0xB0, 0x00, knob, 127)
 
 	def light_keys(keys):
-		# print('light_keys')
-
 		for i in keys:
 			device.midiOutMsg(0x90, 0x00, i, 127)
 
@@ -49,6 +46,7 @@ class Leds:
 			device.midiOutMsg(0x90, 0x00, i, 0x00)
 
 	def light_quarter_knob(knob, side):
+		print(knob)
 		if side == 1:
 			device.midiOutMsg(0xB0, 0x00, knob, 38)
 		elif side == 2:
@@ -73,7 +71,7 @@ class Leds:
 		device.midiOutMsg(0xB0, 0x00, 8 + knob_num, led_num)
 			
 	def light_transport():
-		# print('light_transport')
+		print('light_transporttt')
 		if transport.isRecording():
 			# device.midiOutMsg(0x90, 0x00, 0x0F, 1)
 			device.midiOutMsg(0x90, 0x00, 0x5F, 127)
@@ -104,5 +102,3 @@ class Leds:
 		device.midiOutMsg(0x90, 0x00, 0x21, 0x01) # Lights button 16
 	# device.midiOutMsg(176, 0, 15, 2)
 	# device.midiOutMsg(0xC0, 0x00, 0x09, 0x05)
-
-

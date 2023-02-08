@@ -1,4 +1,3 @@
-
 import data as d
 from action import Action
 import channels
@@ -11,7 +10,7 @@ import plugins
 import patterns
 from utility import Utility
 import midi
-from config_layout import layout, layout_b
+from config_layout import layout
 from leds import Leds
 from config import Config
 import itertools
@@ -25,12 +24,11 @@ class Dispatch:
 		self.channel = channels.selectedChannel()
 		self.pattern = patterns.patternNumber()
 		self.random_offset = 63
+		self.seq_b_offset = 16
 		if self.chan_ex == 138:
 			self.xt = d.Standard()
-
 		else:
 			self.xt = d.MC()
-			print(Mode.layer_count)
 
 class Process(Dispatch):
 
@@ -41,13 +39,13 @@ class Process(Dispatch):
 				Buttons.on_press(self)
 			elif self.event.data1 in self.xt.k_push:
 				Encoder.press(self)
-			elif self.event.data1 == 84 and self.event.data2 > 0:
+			elif self.event.data1 == self.xt.layer_a and self.event.data2 > 0:
 				Mode.set_layer(self, -1)
-				Mode.set_leds(self)
+				# Mode.set_leds(self)
 				self.event.handled = True
 			elif self.event.data1 == self.xt.layer_b and self.event.data2 > 0:
 				Mode.set_layer(self, 1)
-				Mode.set_leds(self)
+				# Mode.set_leds(self)
 				self.event.handled = True
 
 		elif self.event.midiId == self.xt.knob_id and self.event.data1 in self.xt.knobs:
@@ -60,18 +58,15 @@ class Process(Dispatch):
 		elif self.event.midiId == 128:
 			Mode.set_leds(self)
 
-		elif self.event.midiId == 144 and self.event.data1 == 95 and self.event.midiChanEx == 128:
-			device.midiOutMsg(0xB0, 0x00, 0x7F, 0x00)
-
 class Buttons(Process):
 
 	step_to_edit = 0
 
 	def on_press(self):
 
-		if Mode.get_layer() == 2 and Mode.get_mode() != 8:  # transport layer
+		if Mode.get_layer() == 2 and Mode.get_mode() != 8:  #  Modes 6 & 7, B transport layer
 			if self.event.data2 > 0:
-				Main.layer_b(self)
+				Main.transport_act(self, self.event.data1 + 100)
 
 		elif Mode.get_mode() == 6:  # keyboard
 			Keys.decide(self)
@@ -84,7 +79,7 @@ class Buttons(Process):
 					if Mode.get_seq_status() == 'Pattern A':
 						step = self.xt.buttons.index(self.event.data1)
 					if Mode.get_seq_status() == 'Pattern B':
-						step = self.xt.buttons.index(self.event.data1) + 16
+						step = self.xt.buttons.index(self.event.data1) + self.seq_b_offset
 
 					if channels.getGridBit(channels.selectedChannel(), step) == 0:						
 						channels.setGridBit(channels.selectedChannel(), step, 1)
@@ -94,23 +89,23 @@ class Buttons(Process):
 						channels.setGridBit(channels.selectedChannel(), step, 0)
 						Mode.set_leds(self)
 						self.event.handled = True
+
 				elif Mode.get_layer() == 1:
 					if Mode.get_seq_status() == 'Pattern A':
 						Buttons.step_to_edit = self.xt.buttons.index(self.event.data1)
-						Leds.blink_step()
 						print(Buttons.step_to_edit)
+						Mode.set_leds(self)
+						Leds.blink_step(self.xt.all_button_leds[Buttons.step_to_edit])
 						self.event.handled = True
 					if Mode.get_seq_status() == 'Pattern B':
 						Buttons.step_to_edit = self.xt.buttons.index(self.event.data1) + 16
-						Leds.blink_step()
+						Mode.set_leds(self)
+						Leds.blink_step(self.xt.all_button_leds[Buttons.step_to_edit - 16])
 						self.event.handled = True
 
 		elif Mode.get_mode() == 8:
 			if self.event.data2 > 0:
-				Main.transport_act(self, 20 * Mode.get_layer() + self.event.data1 )
-
-	def layer_b(self):
-		Main.decide(self)
+				Main.transport_act(self, 20 * Mode.get_layer() + self.event.data1)
 
 class Keys(Process):
 
@@ -142,7 +137,7 @@ class Keys(Process):
 					self.event.handled = True
 
 		elif Mode.get_layer() == 1:
-			channels.midiNoteOn(channels.selectedChannel(), Scales.scales[Scales.get_scale_choice()][self.xt.buttons.index(self.event.data1) + 36 + Notes.get_root_note()], self.event.data2)
+			channels.midiNoteOn(channels.selectedChannel(), Scales.scales[Scales.get_scale_choice()][self.xt.buttons.index(self.event.data1) + 24 + Notes.get_root_note()], self.event.data2)
 			self.event.handled = True
 
 	def play_note(self):
@@ -155,11 +150,10 @@ class Mode(Process):
 	seq = itertools.cycle(seq_modes)
 	seq_status = 'Pattern A'
 	modes = ['Keyboard', 'Transport', 'Sequencer']
-	layers = ['A', 'B', 'C']
-	current_layer = 'A'
 	layer_count = 0
 
 	def set_layer(self, val):
+
 		Mode.layer_count = Mode.layer_count + val
 		if Mode.layer_count < 0:
 			Mode.layer_count = 2
@@ -190,6 +184,7 @@ class Mode(Process):
 		Leds.off(self.xt.all_button_leds)
 		Leds.light_layer(Mode.get_layer())
 		if Mode.get_layer() == 2 and Mode.get_mode() != 8:
+			print('light_transport')
 			Leds.light_transport()
 		elif Mode.get_mode() == 6:
 			if Mode.get_layer() == 0:
@@ -197,11 +192,12 @@ class Mode(Process):
 			elif Mode.get_layer() == 1:
 				Leds.light_button_range(self.xt.all_button_leds)
 
-		elif Mode.get_mode() == 7:
+		elif Mode.get_mode() == 7 and Mode.get_layer() != 2:
+			Leds.knobs_off()
 			if Mode.get_seq_status() == 'Pattern A':
-				Leds.light_quarter_knob(self.event.data1 + 16, 1)
-			else:
-				Leds.light_quarter_knob(self.event.data1 + 16, 2)
+				Leds.light_quarter_knob(54, 1)
+			elif Mode.get_seq_status() == 'Pattern B':
+				Leds.light_quarter_knob(54, 2)
 			Leds.light_steps(Mode.get_seq_status())
 		elif Mode.get_mode() == 8 and Mode.get_layer() == 0:
 			Leds.light_transport()
@@ -211,12 +207,14 @@ class Mode(Process):
 class Update():
 
 	def light_control(event):
-		if event and Mode.get_mode() == 7:
+		if event and Mode.get_mode() == 7 and Mode.get_layer() != 2:
 			Leds.light_steps(Mode.get_seq_status(), )
 		elif event == 256 or event == 260:
+			print('256 260')
 			if Mode.get_mode() == 8 and Mode.get_layer() == 0:
 				Leds.light_transport()
-			if Mode.get_layer() == 2 and Mode.get_mode() != 8:
+			elif Mode.get_layer() == 2 and Mode.get_mode() != 8:
+				print('lt')
 				Leds.light_transport()
 
 class Encoder(Process):
@@ -288,12 +286,28 @@ class Encoder(Process):
 				plugins.setParamValue(param_value, param, self.channel)
 				self.event.handled = True
 
-		elif Mode.get_mode() == 7: 
-			if Mode.get_layer() == 1:
+		# elif self.event.data1 == self.xt.knobs[3] and Mode.get_mode() != 7:
+		# 	shift = Shifter()
+		# 	if self.event.data2 == 65:
+		# 		shift.back()
+		# 	elif self.event.data2 == 1:
+		# 		shift.forward()
+
+		elif Mode.get_mode() == 7 and self.event.data1 < 23:  		# < 23 ignores shift and lets knob 8 adjust random offset
+
+			if Mode.get_layer() == 0 and self.event.data1 == self.xt.knobs[3]:
+				shift = Shifter()
+				if self.event.data2 == 65:
+					shift.back()
+				elif self.event.data2 == 1:
+					shift.forward()			 
+			elif Mode.get_layer() == 1:
 				Encoder.edit_parameter(self)
 
 			elif Mode.get_layer() == 2:
 				Encoder.set_random(self) 
+
+
 
 		elif Mode.get_mode() == 6 and Mode.get_layer() == 1:
 			if self.event.data1 == self.xt.knobs[0] or self.event.data1 == self.xt.knobs[1]:
@@ -320,12 +334,6 @@ class Encoder(Process):
 				Action.set_mixer_route(link)
 				ui.setHintMsg(f"Route Current Track to Track {link}")
 
-		elif self.event.data1 == self.xt.knobs[3]:
-			shift = Shifter()
-			if self.event.data2 == 65:
-				shift.back()
-			elif self.event.data2 == 1:
-				shift.forward()
 
 		elif self.event.data1 == self.xt.knobs[7]:
 			Action.set_random_offset(Utility.level_adjust(self.event.data2, Action.get_random_offset(), 5))
@@ -418,12 +426,8 @@ class Main(Process):
 	def transport_act(self, offset_event):
 		# use index in list rather than event
 			Action.call_func(layout[self.xt.mapping[offset_event]])
+			# print(self.xt.mapping[self.event.data1] + '_b')
 			self.event.handled = True
-
-	def layer_b(self):
-		Action.call_func(layout_b[self.xt.mapping_b[self.event.data1]])
-		self.event.handled = True
-
 
 class Shifter():
 

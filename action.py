@@ -4,6 +4,7 @@ from midi import *
 import midi  
 import arrangement 
 import channels 
+import general
 import device 
 import mixer 
 import patterns
@@ -12,17 +13,13 @@ import plugins
 import transport 
 import ui
 import data 
-# from config import Config 
-# from wheels import ModWheel, PitchWheel 
+from config import Config 
 from utility import Utility
 from notes import Notes, Scales 
-# from pads import Pads 
 # from timing import Timing 
 
 class Action():
 
-	shift_status = False
-	alter = ["Alter Selected Only", "Normal"]
 	window_constants = ["mixer", "channels", "playlist", "piano", "browser"]
 	color_num = 0
 	parameter_index = 0
@@ -30,9 +27,7 @@ class Action():
 	mixer_send = 0 
 	offset_iter = 0
 	pitch_value = 0
-	# c = itertools.cycle(Config.COLORS)
-	a = itertools.cycle(alter)
-	alt_status = ''
+	c = itertools.cycle(Config.COLORS)
 	random_offset = 63
 
 	def call_func(f):
@@ -40,9 +35,13 @@ class Action():
 		print(f)
 		return method()
 
-	def alt():
-		Action.alt_status = next(Action.a) 
-		Timing.begin_message(f'Alt Status: {Action.alt_status}')
+	# def alt():
+		# Action.alt_status = next(Action.a) 
+		# Timing.begin_message(f'Alt Status: {Action.alt_status}')
+
+	def standard_mode():
+		device.midiOutMsg(0xB0, 0x00, 0x7F, 0x00)
+		
 
 	def channel_mixer():
 		if ui.getFocused(midi.widMixer):
@@ -265,7 +264,10 @@ class Action():
 		transport.globalTransport(midi.FPT_Menu, 90)
 
 	def undo_up():
-		transport.globalTransport(midi.FPT_UndoUp, 21)
+		transport.globalTransport(midi.FPT_UndoUp, 21)	
+
+	def undo_down():
+		general.undoDown()
 
 	def countdown():
 		transport.globalTransport(midi.FPT_CountDown, 115)
@@ -353,7 +355,7 @@ class Action():
 
 	def get_random_offset():
 		return Action.random_offset
-		
+
 	def get_step_param():
 		return Action.parameter_index
 

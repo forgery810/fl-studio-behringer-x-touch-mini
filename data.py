@@ -85,7 +85,7 @@ class MC:
 		115: "thirtytwo",
 
 		129: "thirtythree",
-		13: "thirtyfour",
+		130: "thirtyfour",
 		80: "thirtyfive",
 		81: "thirtysix",
 		82: "thirtyseven",
@@ -95,11 +95,28 @@ class MC:
 		127: "fortyone",
 		128: "fortytwo",
 		131: "fortythree",
-		131: "fortyfour",
+		132: "fortyfour",
 		126: "fortyfive",
 		133: "fortysix",
 		134: "fortyseven",
 		135: "fortyeight",
+
+		189: "one_b",
+		190: "two_b",
+		140: "three_b",
+		141: "four_b",
+		142: "five_b",
+		143: "six_b",
+		144: "seven_b",
+		145: "eight_b",
+		187: "nine_b",
+		188: "ten_b",
+		191: "eleven_b",
+		192: "twelve_b",
+		186: "thirteen_b",
+		193: "fourteen_b",
+		194: "fifteen_b",
+		195: "sixteen_b",
 	}
 
 	mapping_b = {
