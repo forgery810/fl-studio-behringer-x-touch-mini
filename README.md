@@ -13,7 +13,7 @@ FL Studio:
 + under Options - MIDI, click on the X-TOUCH MINI under Input
 + in Controller type, select Behringer X-Touch Mini (user)
 + select a port number
-+ under Output select he controller, enable Send master syn
++ under Output select he controller, enable Send master sync
 + choose the same Portnumber as the Input
 
 Controller:
