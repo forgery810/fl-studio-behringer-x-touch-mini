@@ -1,6 +1,6 @@
 # name=Behringer X-Touch Mini
 # Author: ts-forgery
-# Version 0.90
+# Version 0.91
 
 import device
 import channels
@@ -39,7 +39,7 @@ def  OnMidiMsg(event):
 	p.triage()
 
 def OnRefresh(event):
-	print(event)
+	# print(event)
 	Update.light_control(event)
 
 p = Process()

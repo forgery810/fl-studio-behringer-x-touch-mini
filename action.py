@@ -35,13 +35,8 @@ class Action():
 		print(f)
 		return method()
 
-	# def alt():
-		# Action.alt_status = next(Action.a) 
-		# Timing.begin_message(f'Alt Status: {Action.alt_status}')
-
 	def standard_mode():
 		device.midiOutMsg(0xB0, 0x00, 0x7F, 0x00)
-		
 
 	def channel_mixer():
 		if ui.getFocused(midi.widMixer):
@@ -59,23 +54,6 @@ class Action():
 
 	def mixer_route():
 		mixer.setRouteTo(mixer.trackNumber(), Action.get_mixer_route(), 1)
-
-	def get_alt_status():
-		if Config.ALT_ALWAYS == True:
-			return True 
-		elif Action.alt_status == "Alter Selected Only":
-			return True
-		else:
-			return False
-
-	def pitch_wheel(event):
-		PitchWheel.set_pitch_value(event)
-		if Config.PITCH_BEND_ON and Action.shift_status == False and playlist.getPerformanceModeState() != 1:
-			channels.setChannelPitch(channels.selectedChannel(), Utility.mapvalues(event.data2, -1, 1, 0, 127))
-		elif Action.shift_status == True:
-			print('shift_status')
-			Action.pitch_value = event.data2	
-			ui.setHintMsg(f'{(int(Utility.mapvalues(event.data2, 100, 0, 0, 128)))}%')
 
 	def start():
 		return transport.start()	
@@ -116,8 +94,8 @@ class Action():
 			return mixer.muteTrack(mixer.trackNumber())
 		elif ui.getFocused(1):
 			return channels.muteChannel(channels.channelNumber())
-		elif ui.getFocused(2):
-			playlist.muteTrack(ModWheel.get_pl_mod_value())
+		# elif ui.getFocused(2):
+		# 	playlist.muteTrack(ModWheel.get_pl_mod_value())
 
 	def open_channel():
 		return channels.showCSForm(channels.channelNumber(), -1)
@@ -148,8 +126,6 @@ class Action():
 		if ui.getFocused(4):
 			ui.selectBrowserMenuItem()		
 		elif ui.getFocused(widPlaylist):
-			print('widp')
-			print(arrangement.currentTime(1))
 			arrangement.addAutoTimeMarker(arrangement.currentTime(1), str(arrangement.currentTime(1)))
 		else:
 			return ui.enter()
@@ -306,10 +282,9 @@ class Action():
 			channels.setChannelColor(channels.selectedChannel(),  next(Action.c))
 		elif ui.getFocused(widMixer):
 			mixer.setTrackColor(mixer.trackNumber(), next(Action.c))
-		elif ui.getFocused(widPlaylist) and playlist.isTrackSelected(ModWheel.get_pl_mod_value()):
-			print(ModWheel.get_pl_mod_value())
+		# elif ui.getFocused(widPlaylist) and playlist.isTrackSelected(ModWheel.get_pl_mod_value()):
 
-			playlist.setTrackColor(ModWheel.get_pl_mod_value(), next(Action.c))
+		# 	playlist.setTrackColor(ModWheel.get_pl_mod_value(), next(Action.c))
 
 	def trig_clip():
 		playlist.triggerLiveClip(1, 1, midi.TLC_MuteOthers | midi.TLC_Fill)
@@ -339,13 +314,13 @@ class Action():
 			# print(note)
 			channels.setStepParameterByIndex(channels.selectedChannel(), patterns.patternNumber(), i, 0, note + root, 1)		
 
-	def shift():
-		if Action.shift_status == False:
-			Action.shift_status = True
-			Timing.begin_message('Shift Active')
-		elif Action.shift_status == True:
-			Action.shift_status = False
-			Timing.begin_message('Shift Disabled')
+	# def shift():
+	# 	if Action.shift_status == False:
+	# 		Action.shift_status = True
+	# 		Timing.begin_message('Shift Active')
+	# 	elif Action.shift_status == True:
+	# 		Action.shift_status = False
+	# 		Timing.begin_message('Shift Disabled')
 
 	def get_shift_status():
 		return Action.shift_status

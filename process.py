@@ -210,11 +210,9 @@ class Update():
 		if event and Mode.get_mode() == 7 and Mode.get_layer() != 2:
 			Leds.light_steps(Mode.get_seq_status(), )
 		elif event == 256 or event == 260:
-			print('256 260')
 			if Mode.get_mode() == 8 and Mode.get_layer() == 0:
 				Leds.light_transport()
 			elif Mode.get_layer() == 2 and Mode.get_mode() != 8:
-				print('lt')
 				Leds.light_transport()
 
 class Encoder(Process):
@@ -426,7 +424,6 @@ class Main(Process):
 	def transport_act(self, offset_event):
 		# use index in list rather than event
 			Action.call_func(layout[self.xt.mapping[offset_event]])
-			# print(self.xt.mapping[self.event.data1] + '_b')
 			self.event.handled = True
 
 class Shifter():
