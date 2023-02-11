@@ -14,7 +14,7 @@ FL Studio:
 + in Controller type, select Behringer X-Touch Mini (user)
 + select a port number
 + under Output select he controller, enable Send master sync
-+ choose the same Portnumber as the Input
++ choose the same port number as the Input
 
 Controller:
 
@@ -25,10 +25,10 @@ Layout Design:
 
 The script allows over 50 buttons to be assigned functions by the user. Layouts can be created at:
 
-www.forgery.dev/behringer-xtouchmini/layout-designer 
+www.forgery.dev/behringer-xtouch-mini/layout-designer 
 
 More Info:
 
 The manual and more information are available at:
-www.forgery.dev/behringer-xtouchmini
+www.forgery.dev/behringer-xtouch-mini
 
